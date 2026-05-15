@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Video {
+  id          BigInt    @id @default(autoincrement())
+  youtubeId   String    @unique @map("youtube_id") @db.VarChar(32)
+  title       String?   @db.Text
+  slug        String?   @db.Text
+  description String?   @db.Text
+  thumbnail   String?   @db.Text
+  duration    Int?
+  channelId   BigInt?   @map("channel_id")
+  channel     Channel?  @relation(fields: [channelId], references: [id])
+  views       BigInt    @default(0)
+  likes       BigInt    @default(0)
+  publishedAt DateTime? @map("published_at")
+  indexedAt   DateTime  @default(now()) @map("indexed_at")
+  language    String?   @db.VarChar(16)
+  category    String?   @db.VarChar(64)
+  tags        String[]
+  transcript  String?   @db.Text
+  aiSummary   String?   @map("ai_summary") @db.Text
+  hotScore    Float     @default(0) @map("hot_score")
+  embedOk     Boolean   @default(true) @map("embed_ok")
+
+  @@index([slug])
+  @@index([category])
+  @@index([hotScore(sort: Desc)])
+  @@index([publishedAt(sort: Desc)])
+  @@index([indexedAt(sort: Desc)])
+  @@map("videos")
+}
+
+model Channel {
+  id               BigInt   @id @default(autoincrement())
+  youtubeChannelId String   @unique @map("youtube_channel_id")
+  name             String?  @db.Text
+  slug             String?  @db.Text
+  logo             String?  @db.Text
+  subscribers      BigInt   @default(0)
+  indexedAt        DateTime @default(now()) @map("indexed_at")
+  videos           Video[]
+
+  @@index([slug])
+  @@map("channels")
+}
+
+model Keyword {
+  id          BigInt    @id @default(autoincrement())
+  keyword     String    @unique @db.Text
+  category    String?   @db.Text
+  priority    Int       @default(1)
+  crawlCount  Int       @default(0) @map("crawl_count")
+  lastCrawled DateTime? @map("last_crawled")
+
+  @@index([priority(sort: Desc)])
+  @@index([lastCrawled])
+  @@map("keywords")
+}
+
+model SearchCache {
+  id        BigInt   @id @default(autoincrement())
+  keyword   String   @db.Text
+  results   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([keyword])
+  @@index([createdAt])
+  @@map("search_cache")
+}
+
+model SitemapChunk {
+  id        Int      @id @default(autoincrement())
+  type      String   @db.VarChar(32)
+  chunkNum  Int      @map("chunk_num")
+  urlCount  Int      @default(0) @map("url_count")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([type, chunkNum])
+  @@map("sitemap_chunks")
+}
