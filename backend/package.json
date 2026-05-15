@@ -1,0 +1,41 @@
+{
+  "name": "tubediscover-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev:server": "tsx watch server.ts",
+    "dev:worker": "tsx watch worker.ts",
+    "build":      "tsc",
+    "start:server": "node dist/server.js",
+    "start:worker": "node dist/worker.js",
+    "db:push":     "prisma db push",
+    "db:generate": "prisma generate",
+    "db:migrate":  "prisma migrate deploy",
+    "db:seed":     "tsx seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client":    "^5.22.0",
+    "@fastify/cors":     "^9.0.1",
+    "@fastify/rate-limit": "^9.1.0",
+    "bullmq":            "^5.13.0",
+    "fastify":           "^4.28.0",
+    "groq-sdk":          "^0.7.0",
+    "meilisearch":       "^0.44.0",
+    "ioredis":           "^5.4.1",
+    "axios":             "^1.7.7",
+    "xml2js":            "^0.6.2",
+    "node-cron":         "^3.0.3",
+    "slugify":           "^1.6.6",
+    "p-limit":           "^6.1.0",
+    "winston":           "^3.14.2",
+    "dotenv":            "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node":       "^22.0.0",
+    "@types/xml2js":     "^0.4.14",
+    "@types/node-cron":  "^3.0.11",
+    "prisma":            "^5.22.0",
+    "tsx":               "^4.19.1",
+    "typescript":        "^5.6.3"
+  }
+}
